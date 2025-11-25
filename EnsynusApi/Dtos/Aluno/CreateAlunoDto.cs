@@ -1,10 +1,7 @@
-﻿using EnsynusApi.Models;
-
-namespace EnsynusApi.Dtos.Aluno
+﻿namespace EnsynusApi.Dtos.Aluno
 {
-    public class AlunoDto
+    public class CreateAlunoDto
     {
-        public int AluId { get; set; }
 
         public string AluNome { get; set; } = null!;
 
@@ -13,6 +10,7 @@ namespace EnsynusApi.Dtos.Aluno
         public DateTime AluDataNasc { get; set; } = DateTime.MinValue;
 
         public string? AluEmailResp { get; set; }
+        public string AluSenha { get; set; } = null!;
 
         public string? AluNomeResp { get; set; }
     }

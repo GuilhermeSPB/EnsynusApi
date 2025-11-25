@@ -21,5 +21,27 @@ namespace EnsynusApi.Dtos.Aluno
                 AluNomeResp = alunoModel.AluNomeResp
             };
         }
+
+        public static Models.Aluno ToAlunoFromCreateDto(this CreateAlunoDto createAlunoDto)
+        {
+            return new Models.Aluno
+            {
+                AluNome = createAlunoDto.AluNome,
+                AluEmail = createAlunoDto.AluEmail,
+                AluDataNasc = createAlunoDto.AluDataNasc,
+                AluEmailResp = createAlunoDto.AluEmailResp,
+                AluNomeResp = createAlunoDto.AluNomeResp,
+                AluSenha = createAlunoDto.AluSenha
+            };
+        }
+
+        public static Models.Aluno ToAlunoFromRedefinirDto(this CreateAlunoDto createAlunoDto)
+        {
+            return new Models.Aluno
+            {
+                AluSenha = createAlunoDto.AluSenha
+            };
+        }
+
     }
 }
