@@ -24,6 +24,4 @@ public partial class Turma
     public virtual Professor FkIdProfessorNavigation { get; set; } = null!;
 
     public virtual ICollection<Ingresso> Ingressos { get; set; } = new List<Ingresso>();
-
-    public virtual ICollection<Pagamento> Pagamentos { get; set; } = new List<Pagamento>();
 }

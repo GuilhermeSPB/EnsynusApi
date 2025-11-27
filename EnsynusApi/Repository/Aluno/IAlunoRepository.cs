@@ -14,5 +14,7 @@ namespace EnsynusApi.Repository.Aluno
         Task<Models.Aluno> UpdateAsync(int id, UpdateAlunoDto alunoDto);
         Task<Models.Aluno> CreateAsync(Models.Aluno aluno);
         Task<Models.Aluno> DeleteAsync(int id);
+        Task<Models.Aluno> RedefinirSenhaAsync(int id, string senha);
+
     }
 }

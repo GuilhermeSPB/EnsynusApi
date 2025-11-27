@@ -1,10 +1,13 @@
 using EnsynusApi.Data;
-using EnsynusApi.Dtos;
+using EnsynusApi.Dtos.Aluno;
+using EnsynusApi.Dtos.Professor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using EnsynusApi.Repository;
 using EnsynusApi.Repository.Aluno;
+using EnsynusApi.Repository.Professor;
+using EnsynusApi.Repository.Turma;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 
@@ -27,6 +30,8 @@ builder.Services.AddDbContext<EnsynusContext>(options =>
     );
 
 builder.Services.AddScoped<IAlunoRepository, AlunoRepository>();
+builder.Services.AddScoped<IProfessorRepository, ProfessorRepository>();
+builder.Services.AddScoped<ITurmaRepository, TurmaRepository>();
 
 var app = builder.Build();
 

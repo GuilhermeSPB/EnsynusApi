@@ -47,7 +47,6 @@ namespace EnsynusApi.Repository.Aluno
             }
             alunoExistente.AluNome = alunoDto.AluNome;
             alunoDto.AluEmail = alunoDto.AluEmail;
-            alunoDto.AluSenha = alunoDto.AluSenha;
             alunoExistente.AluDataNasc = alunoDto.AluDataNasc;
             alunoExistente.AluNomeResp = alunoDto.AluNomeResp;
             await _context.SaveChangesAsync();
@@ -76,7 +75,7 @@ namespace EnsynusApi.Repository.Aluno
             return alunoExistente;
         }
 
-        public async Task<Models.Aluno> RedefinirSenhaAsync(int id, RedefinirAlunoDto redefinirDto)
+        public async Task<Models.Aluno> RedefinirSenhaAsync(int id, string senha)
         {
             var alunoExistente = await _context.Alunos.FindAsync(id);
 
@@ -85,7 +84,7 @@ namespace EnsynusApi.Repository.Aluno
                 return null;
             }
 
-            alunoExistente.AluSenha = redefinirDto.AluSenha;
+            alunoExistente.AluSenha = senha;
             await _context.SaveChangesAsync();
             return alunoExistente;
         }

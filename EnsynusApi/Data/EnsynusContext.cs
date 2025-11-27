@@ -25,15 +25,15 @@ public partial class EnsynusContext : DbContext
 
     public virtual DbSet<Ingresso> Ingressos { get; set; }
 
-    public virtual DbSet<Pagamento> Pagamentos { get; set; }
-
     public virtual DbSet<Professor> Professors { get; set; }
 
     public virtual DbSet<Turma> Turmas { get; set; }
 
+    public virtual DbSet<VwTurmaxprofessor> VwTurmaxprofessors { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseMySql("server=localhost;port=3030;database=ensynus;uid=root;pwd=root", ServerVersion.Parse("8.0.42-mysql"));
+        => optionsBuilder.UseMySql("server=localhost;port=3030;user=root;password=root;database=ensynus", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.42-mysql"));
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -149,39 +149,6 @@ public partial class EnsynusContext : DbContext
                 .HasConstraintName("ingresso_ibfk_2");
         });
 
-        modelBuilder.Entity<Pagamento>(entity =>
-        {
-            entity.HasKey(e => new { e.PagData, e.FkIdAluno, e.FkIdTurma })
-                .HasName("PRIMARY")
-                .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0 });
-
-            entity.ToTable("pagamento");
-
-            entity.HasIndex(e => e.FkIdAluno, "fk_idAluno");
-
-            entity.HasIndex(e => e.FkIdTurma, "fk_idTurma");
-
-            entity.Property(e => e.PagData).HasColumnName("pag_data");
-            entity.Property(e => e.FkIdAluno).HasColumnName("fk_idAluno");
-            entity.Property(e => e.FkIdTurma).HasColumnName("fk_idTurma");
-            entity.Property(e => e.PagStatus)
-                .HasMaxLength(50)
-                .HasColumnName("pag_status");
-            entity.Property(e => e.PagValorPago)
-                .HasPrecision(10, 2)
-                .HasColumnName("pag_valorPago");
-
-            entity.HasOne(d => d.FkIdAlunoNavigation).WithMany(p => p.Pagamentos)
-                .HasForeignKey(d => d.FkIdAluno)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("pagamento_ibfk_1");
-
-            entity.HasOne(d => d.FkIdTurmaNavigation).WithMany(p => p.Pagamentos)
-                .HasForeignKey(d => d.FkIdTurma)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("pagamento_ibfk_2");
-        });
-
         modelBuilder.Entity<Professor>(entity =>
         {
             entity.HasKey(e => e.ProId).HasName("PRIMARY");
@@ -233,6 +200,20 @@ public partial class EnsynusContext : DbContext
                 .HasForeignKey(d => d.FkIdProfessor)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("turma_ibfk_1");
+        });
+
+        modelBuilder.Entity<VwTurmaxprofessor>(entity =>
+        {
+            entity.HasKey(e => e.Cód);                       
+            entity.ToView("vw_turmaxprofessor");             
+
+            entity.Property(e => e.Cód)
+                .HasMaxLength(50)
+                .ValueGeneratedNever();
+            entity.Property(e => e.Modalidade).HasMaxLength(50);
+            entity.Property(e => e.Nome).HasMaxLength(100);
+            entity.Property(e => e.Professor).HasMaxLength(100);
+            entity.Property(e => e.Área).HasMaxLength(100);
         });
 
         OnModelCreatingPartial(modelBuilder);

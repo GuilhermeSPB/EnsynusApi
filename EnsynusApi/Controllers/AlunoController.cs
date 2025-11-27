@@ -84,16 +84,13 @@ namespace EnsynusApi.Controllers
 
         [HttpPut]
         [Route("redefinir-senha/{id}")]
-        public async Task<IActionResult> RedefinirSenha([FromRoute] int id , [FromBody] CreateAlunoDto redefinirDtop)
+        public async Task<IActionResult> RedefinirSenha([FromRoute] int id , [FromBody] string senha)
         {
-            var alunoModel = await _context.Alunos.FindAsync(id);
+            var alunoModel = await _alunoRepository.RedefinirSenhaAsync(id, senha);
             if (alunoModel == null)
             {
                 return NotFound();
             }
-
-            alunoModel.AluSenha = redefinirDtop.AluSenha;
-            await _context.SaveChangesAsync();
 
             return Ok(alunoModel.ToAlunoDto());
         }
