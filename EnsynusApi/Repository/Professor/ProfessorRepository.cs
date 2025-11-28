@@ -27,7 +27,7 @@ namespace EnsynusApi.Repository.Professor
             return await _context.Professors.FindAsync(id);
         }
 
-        public async Task<Models.Professor> UpdateAsync(int id, UpdateProfessorDto dto)
+        public async Task<Models.Professor> UpdateAsync(int id, UpdateProfessorDto updateDto)
         {
             var prof = await _context.Professors.FindAsync(id);
 
@@ -36,9 +36,9 @@ namespace EnsynusApi.Repository.Professor
                 return null;
             }
 
-            prof.ProNome = dto.ProNome;
-            prof.ProEmail = dto.ProEmail;
-            prof.ProDataNasc = dto.ProDataNasc;
+            prof.ProNome = updateDto.ProNome;
+            prof.ProEmail = updateDto.ProEmail;
+            prof.ProDataNasc = updateDto.ProDataNasc;
 
             await _context.SaveChangesAsync();
             return prof;
@@ -77,6 +77,15 @@ namespace EnsynusApi.Repository.Professor
             prof.ProSenha = senha;
             await _context.SaveChangesAsync();
             return prof;
+        }
+
+        public bool checarExistencia(int id)
+        {
+            if (_context.Professors.Any(e => e.ProId == id))
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

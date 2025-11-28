@@ -31,9 +31,8 @@ public partial class EnsynusContext : DbContext
 
     public virtual DbSet<VwTurmaxprofessor> VwTurmaxprofessors { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseMySql("server=localhost;port=3030;user=root;password=root;database=ensynus", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.42-mysql"));
+    public virtual DbSet<VwIngresso> VwIngresso { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -204,16 +203,31 @@ public partial class EnsynusContext : DbContext
 
         modelBuilder.Entity<VwTurmaxprofessor>(entity =>
         {
-            entity.HasKey(e => e.Cód);                       
+            entity.HasKey(e => e.Cod);                       
             entity.ToView("vw_turmaxprofessor");             
 
-            entity.Property(e => e.Cód)
+            entity.Property(e => e.Cod)
                 .HasMaxLength(50)
                 .ValueGeneratedNever();
             entity.Property(e => e.Modalidade).HasMaxLength(50);
             entity.Property(e => e.Nome).HasMaxLength(100);
             entity.Property(e => e.Professor).HasMaxLength(100);
-            entity.Property(e => e.Área).HasMaxLength(100);
+            entity.Property(e => e.Area).HasMaxLength(100);
+        });
+
+        modelBuilder.Entity<VwIngresso>(entity =>
+        {
+            entity.HasKey(e => e.Cod);
+            entity.ToView("vw_ingresso");
+
+            entity.Property(e => e.Cod).HasColumnName("Cod");
+            entity.Property(e => e.AlunoNome).HasMaxLength(100).HasColumnName("AlunoNome");
+            entity.Property(e => e.TurmaNome).HasMaxLength(100).HasColumnName("TurmaNome");
+            entity.Property(e => e.DataEntrada).HasColumnName("DataEntrada");
+            entity.Property(e => e.DataSaida).HasColumnName("DataSaida");
+            entity.Property(e => e.Solicitacao).HasMaxLength(200).HasColumnName("Solicitacao");
+            entity.Property(e => e.AluId).HasColumnName("alu_id");
+            entity.Property(e => e.TurId).HasColumnName("tur_id");
         });
 
         OnModelCreatingPartial(modelBuilder);

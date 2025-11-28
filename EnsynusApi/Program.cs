@@ -9,10 +9,13 @@ using EnsynusApi.Repository.Aluno;
 using EnsynusApi.Repository.Professor;
 using EnsynusApi.Repository.Turma;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using EnsynusApi.Repository.Ingresso;
 
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+Console.WriteLine("Connection => " +
+    builder.Configuration.GetConnectionString("DefaultConnection"));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -21,6 +24,8 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddControllers();
+
+
 
 builder.Services.AddDbContext<EnsynusContext>(options =>
     options.UseMySql(
@@ -32,8 +37,13 @@ builder.Services.AddDbContext<EnsynusContext>(options =>
 builder.Services.AddScoped<IAlunoRepository, AlunoRepository>();
 builder.Services.AddScoped<IProfessorRepository, ProfessorRepository>();
 builder.Services.AddScoped<ITurmaRepository, TurmaRepository>();
+builder.Services.AddScoped<IIngressoRepository, IngressoRepository>();
 
 var app = builder.Build();
+
+Console.WriteLine("Connection => " +
+    builder.Configuration.GetConnectionString("DefaultConnection"));
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

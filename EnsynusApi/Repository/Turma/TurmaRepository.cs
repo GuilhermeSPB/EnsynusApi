@@ -1,17 +1,21 @@
 ﻿using EnsynusApi.Models;
 using EnsynusApi.Data;
 using EnsynusApi.Dtos.Turma;
+using EnsynusApi.Repository.Professor;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace EnsynusApi.Repository.Turma
 {
     public class TurmaRepository : ITurmaRepository
     {
         private readonly EnsynusContext _context;
+        private readonly IProfessorRepository _professorRepository;
 
-        public TurmaRepository(EnsynusContext context)
+        public TurmaRepository(EnsynusContext context , IProfessorRepository professorRepository)
         {
             _context = context;
+            _professorRepository = professorRepository;
         }
 
         public async Task<List<Models.VwTurmaxprofessor>> GetAllAsync()
@@ -29,9 +33,15 @@ namespace EnsynusApi.Repository.Turma
 
         public async Task<Models.Turma> CreateAsync(Models.Turma turma)
         {
-            await _context.Turmas.AddAsync(turma);
-            await _context.SaveChangesAsync();
-            return turma;
+            bool professorExiste = _professorRepository.checarExistencia(turma.FkIdProfessor);
+
+            if (professorExiste)
+            {
+                await _context.Turmas.AddAsync(turma);
+                await _context.SaveChangesAsync();
+                return turma;
+            }
+            return null;
         }
 
         public async Task<Models.Turma> UpdateAsync(int id, UpdateTurmaDto turmaDto)
@@ -48,8 +58,21 @@ namespace EnsynusApi.Repository.Turma
             turmaExistente.TurAreaConhecimento = turmaDto.TurAreaConhecimento;
             turmaExistente.TurDuracao = turmaDto.TurDuracao;
             turmaExistente.TurModalidade = turmaDto.TurModalidade;
-            turmaExistente.FkIdProfessor = turmaDto.FkIdProfessor.Value;
 
+            await _context.SaveChangesAsync();
+            return turmaExistente;
+        }
+
+        public async Task<Models.Turma> DeleteAsync(int id)
+        {
+            var turmaExistente = await _context.Turmas.FindAsync(id);
+
+            if (turmaExistente == null)
+            {
+                return null;
+            }
+
+            _context.Turmas.Remove(turmaExistente);
             await _context.SaveChangesAsync();
             return turmaExistente;
         }

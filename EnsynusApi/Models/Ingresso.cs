@@ -7,9 +7,9 @@ public partial class Ingresso
 {
     public int IngId { get; set; }
 
-    public DateOnly IngDataEntrada { get; set; }
+    public DateTime? IngDataEntrada { get; set; } = DateTime.MinValue;
 
-    public DateOnly? IngDataSaida { get; set; }
+    public DateTime? IngDataSaida { get; set; } = DateTime.MinValue;
 
     public string? IngSolicitacao { get; set; }
 

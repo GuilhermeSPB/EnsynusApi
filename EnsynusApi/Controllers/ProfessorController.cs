@@ -56,16 +56,16 @@ namespace EnsynusApi.Controllers
         
         [HttpPut]
         [Route("edit/{id}")]
-        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateProfessorDto dto)
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateProfessorDto updateDto)
         {
-            var professorModel = await _professorRepository.UpdateAsync(id, dto);
+            var professorModel = await _professorRepository.UpdateAsync(id, updateDto);
 
             if (professorModel == null)
             {
                 return NotFound();
             }
 
-            return Ok(professorModel.ToProfessorDto());
+            return Ok(professorModel.ToProfessorDto);
         }
 
         

@@ -10,5 +10,6 @@ namespace EnsynusApi.Repository.Turma
         Task<Models.VwTurmaxprofessor> GetByIdAsync(int id);
         Task<Models.Turma> CreateAsync(Models.Turma turma);
         Task<Models.Turma> UpdateAsync(int id, UpdateTurmaDto turmaDto);
+        Task<Models.Turma> DeleteAsync(int id);
     }
 }

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using EnsynusApi.Models;
 using EnsynusApi.Repository.Turma;
 using EnsynusApi.Dtos.Turma;
-using EnsynusApi.Dtos.Aluno;
+
 
 namespace EnsynusApi.Controllers
 {
@@ -24,7 +24,7 @@ namespace EnsynusApi.Controllers
         public async Task<IActionResult> GetAll()
         {
             var turmas = await _turmaRepository.GetAllAsync();
-            var dto = turmas.Select(t => t.ToTurmaDto());
+            var dto = turmas.Select(t => t.ToTurmaDtoView());
             return Ok(dto);
         }
 
@@ -40,7 +40,7 @@ namespace EnsynusApi.Controllers
                 return NotFound();
             }
 
-            return Ok(turma.ToTurmaDto());
+            return Ok(turma.ToTurmaDtoView());
         }
 
 
@@ -49,39 +49,42 @@ namespace EnsynusApi.Controllers
         public async Task<IActionResult> Create([FromBody] CreateTurmaDto createDto)
         {
             var turmaDto = createDto.ToTurmaFromCreateDto();
-            await _turmaRepository.CreateAsync(turmaDto);
-
-            return Ok(turmaDto);
+            var turmaCriada = await _turmaRepository.CreateAsync(turmaDto);
+            if(turmaCriada == null)
+            {
+                return BadRequest("Professor não encontrado");
+            }
+            return Ok(turmaCriada);
         }
 
 
-        //[HttpPut]
-        //[Route("edit/{id}")]
-        //public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateProfessorDto dto)
-        //{
-        //    var professorModel = await _professorRepository.UpdateAsync(id, dto);
+        [HttpPut]
+        [Route("edit/{id}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateTurmaDto updateDto)
+        {
+            var turmaModel = await _turmaRepository.UpdateAsync(id, updateDto);
 
-        //    if (professorModel == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (turmaModel == null)
+            {
+                 return NotFound();
+            }
 
-        //    return Ok(professorModel.ToProfessorDto());
-        //}
+            return Ok(turmaModel.ToTurmaDto());
+        }
 
 
-        //[HttpDelete]
-        //[Route("delete/{id}")]
-        //public async Task<IActionResult> Delete([FromRoute] int id)
-        //{
-        //    var professorModel = await _professorRepository.DeleteAsync(id);
+        [HttpDelete]
+        [Route("delete/{id}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            var turmaModel = await _turmaRepository.DeleteAsync(id);
 
-        //    if (professorModel == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (turmaModel == null)
+            {
+                return NotFound();
+            }
 
-        //    return Ok(professorModel.ToProfessorDto());
-        //}
+            return Ok(turmaModel.ToTurmaDto());
+        }
     }
 }

@@ -4,7 +4,7 @@
     {
         public string Nome { get; set; } = null!;
 
-        public string Área { get; set; } = null!;
+        public string Area { get; set; } = null!;
 
         public string? Professor { get; set; }
 

@@ -13,5 +13,6 @@ namespace EnsynusApi.Repository.Professor
         Task<Models.Professor> CreateAsync(Models.Professor professor);
         Task<Models.Professor> DeleteAsync(int id);
         Task<Models.Professor> RedefinirSenhaAsync(int id, string senha);
+        public bool checarExistencia(int id);
     }
 }

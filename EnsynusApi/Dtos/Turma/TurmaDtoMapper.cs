@@ -5,19 +5,34 @@ using System.Threading.Tasks;
 using EnsynusApi.Dtos.Turma;
 using EnsynusApi.Models;
 
-namespace EnsynusApi.Dtos.Aluno
+namespace EnsynusApi.Dtos.Turma
 {
     public static class TurmaDtoMapper
     {
-        public static Models.VwTurmaxprofessor ToTurmaDto(this Models.VwTurmaxprofessor turmaModel)
+        public static Models.Turma ToTurmaDto(this Models.Turma turmaModel)
+        {
+
+            return new Models.Turma
+            {
+                TurId = turmaModel.TurId,
+                TurNome = turmaModel.TurNome,
+                TurAreaConhecimento = turmaModel.TurAreaConhecimento,
+                TurDescricao = turmaModel.TurDescricao,
+                TurDuracao = turmaModel.TurDuracao,
+                TurModalidade = turmaModel.TurModalidade
+            };
+
+        }
+
+        public static Models.VwTurmaxprofessor ToTurmaDtoView(this Models.VwTurmaxprofessor turmaModelView)
         {
             return new Models.VwTurmaxprofessor
             {
-                Cód = turmaModel.Cód,
-                Nome = turmaModel.Nome,
-                Área = turmaModel.Área,
-                Professor = turmaModel.Professor,
-                Modalidade = turmaModel.Modalidade
+                Cod = turmaModelView.Cod,
+                Nome = turmaModelView.Nome,
+                Area = turmaModelView.Area,
+                Professor = turmaModelView.Professor,
+                Modalidade = turmaModelView.Modalidade
             };
         }
 
