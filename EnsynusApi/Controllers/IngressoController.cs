@@ -45,7 +45,7 @@ namespace EnsynusApi.Controllers
 
         [HttpGet]
         [Route("aluno/aprovada/{id}")]
-        public async Task<IActionResult> GetAllAlunosAsync([FromRoute] int id)
+        public async Task<IActionResult> GetAllAlunosAprovadoAsync([FromRoute] int id)
         {
             var ingresso = await _ingressoRepository.GetAllAlunosAsync(id);
 
@@ -53,46 +53,78 @@ namespace EnsynusApi.Controllers
             {
                 return NotFound();
             }
-            var result = ingresso.Select(i => i.ToIngressoVwAlunoAprovado());
+            var result = ingresso.Where(i => i.Solicitacao == "APROVADA").Select(i => i.ToIngressoVwAlunoAprovado());
             return Ok(result);
         }
 
+        [HttpGet]
+        [Route("aluno/saiu/{id}")]
+        public async Task<IActionResult> GetAllAlunosSaiuAsync([FromRoute] int id)
+        {
+            var ingresso = await _ingressoRepository.GetAllAlunosAsync(id);
 
+            if (ingresso == null)
+            {
+                return NotFound();
+            }
+            var result = ingresso.Where(i => i.Solicitacao == "SAIU").Select(i => i.ToIngressoVwAlunoAprovado());
+            return Ok(result);
+        }
 
+        [HttpGet]
+        [Route("aluno/pendente/{id}")]
+        public async Task<IActionResult> GetAllAlunosPendenteAsync([FromRoute] int id)
+        {
+            var ingresso = await _ingressoRepository.GetAllAlunosAsync(id);
 
+            if (ingresso == null)
+            {
+                return NotFound();
+            }
+            var result = ingresso.Where(i => i.Solicitacao == "PENDENTE").Select(i => i.ToIngressoVwAlunoAprovado());
+            return Ok(result);
+        }
 
+        [HttpGet]
+        [Route("aluno/negada/{id}")]
+        public async Task<IActionResult> GetAllAlunosNegadaAsync([FromRoute] int id)
+        {
+            var ingresso = await _ingressoRepository.GetAllAlunosAsync(id);
 
+            if (ingresso == null)
+            {
+                return NotFound();
+            }
+            var result = ingresso.Where(i => i.Solicitacao == "NEGADA").Select(i => i.ToIngressoVwAlunoAprovado());
+            return Ok(result);
+        }
 
-        //[HttpPut]
-        //[Route("edit/{id}")]
-        //public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateProfessorDto updateDto)
-        //{
-        //    var professorModel = await _professorRepository.UpdateAsync(id, updateDto);
+        [HttpGet]
+        [Route("turma/aprovado/{id}")]
+        public async Task<IActionResult> GetAllTurmasAprovadaAsync([FromRoute] int id)
+        {
+            var ingresso = await _ingressoRepository.GetAllTurmasAsync(id);
 
-        //    if (professorModel == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (ingresso == null)
+            {
+                return NotFound();
+            }
+            var result = ingresso.Where(i => i.Solicitacao == "APROVADA").Select(i => i.ToIngressoVwProfessorAprovadoDto());
+            return Ok(result);
+        }
 
-        //    return Ok(professorModel.ToProfessorDto);
-        //}
+        [HttpGet]
+        [Route("turma/Pendente/{id}")]
+        public async Task<IActionResult> GetAllTurmasPendenteAsync([FromRoute] int id)
+        {
+            var ingresso = await _ingressoRepository.GetAllTurmasAsync(id);
 
-
-
-
-
-        //[HttpPut]
-        //[Route("redefinir-senha/{id}")]
-        //public async Task<IActionResult> RedefinirSenha([FromRoute] int id, [FromBody] string senha)
-        //{
-        //    var professorModel = await _professorRepository.RedefinirSenhaAsync(id, senha);
-
-        //    if (professorModel == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return Ok(professorModel.ToProfessorDto());
-        //}
+            if (ingresso == null)
+            {
+                return NotFound();
+            }
+            var result = ingresso.Where(i => i.Solicitacao == "PENDENTE").Select(i => i.ToIngressoVwProfessorAprovadoDto());
+            return Ok(result);
+        }   
     }
 }

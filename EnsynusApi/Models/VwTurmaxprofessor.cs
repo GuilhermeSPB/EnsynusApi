@@ -14,6 +14,4 @@ public partial class VwTurmaxprofessor
 
     public string? Modalidade { get; set; }
 
-    public int AluId { get; set; }
-    public int TurId { get; set; }
 }

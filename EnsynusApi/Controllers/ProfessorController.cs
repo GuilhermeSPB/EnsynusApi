@@ -65,7 +65,7 @@ namespace EnsynusApi.Controllers
                 return NotFound();
             }
 
-            return Ok(professorModel.ToProfessorDto);
+            return Ok(professorModel.ToProfessorDto());
         }
 
         

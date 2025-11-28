@@ -1,6 +1,6 @@
 ﻿namespace EnsynusApi.Dtos.Turma
 {
-    public class vwTurmaDto
+    public class VwTurmaxprofessorDto
     {
         public string Nome { get; set; } = null!;
 

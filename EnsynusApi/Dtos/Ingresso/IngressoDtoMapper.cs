@@ -65,15 +65,6 @@ namespace EnsynusApi.Dtos.Ingresso
             {
                 AlunoNome = vwIngresso.AlunoNome
             };
-        }
-
-        public static VwIngressoProfessorXTurmasDto ToIngressoVwProfessorXTurmasDto(this Models.VwIngresso vwIngresso)
-        {
-            return new VwIngressoProfessorXTurmasDto
-            {
-                Cod = vwIngresso.Cod,
-                TurmaNome = vwIngresso.TurmaNome
-            };
-        }
+        }       
     }
 }
