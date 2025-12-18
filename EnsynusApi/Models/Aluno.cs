@@ -13,7 +13,7 @@ public partial class Aluno
 
     public string AluSenha { get; set; } = null!;
 
-    public DateTime AluDataNasc { get; set; } = DateTime.MinValue;
+    public DateTime? AluDataNasc { get; set; } = DateTime.MinValue;
 
     public string? AluEmailResp { get; set; }
 

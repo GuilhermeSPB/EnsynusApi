@@ -10,6 +10,8 @@ using EnsynusApi.Repository.Professor;
 using EnsynusApi.Repository.Turma;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using EnsynusApi.Repository.Ingresso;
+using EnsynusApi.Service.Auth;
+using EnsynusApi.Service.Token;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,6 +40,8 @@ builder.Services.AddScoped<IAlunoRepository, AlunoRepository>();
 builder.Services.AddScoped<IProfessorRepository, ProfessorRepository>();
 builder.Services.AddScoped<ITurmaRepository, TurmaRepository>();
 builder.Services.AddScoped<IIngressoRepository, IngressoRepository>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
 

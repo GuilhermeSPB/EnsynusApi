@@ -30,18 +30,24 @@ namespace EnsynusApi.Repository.Aluno
         public async Task<Models.Aluno> GetByIdAsync(int id)
         {
 
-            if(checarExistencia(id) == true){
+            if (checarExistencia(id) == true)
+            {
                 return await _context.Alunos.FindAsync(id);
             }
             return null;
-            
+
+        }
+
+        public async Task<Models.Aluno> GetByEmailAsync(string email)
+        {
+            return await _context.Alunos.FirstOrDefaultAsync(a => a.AluEmail == email);
         }
 
         public async Task<Models.Aluno> UpdateAsync(int id, UpdateAlunoDto alunoDto)
         {
             var alunoExistente = await _context.Alunos.FindAsync(id);
 
-            if( alunoExistente == null)
+            if (alunoExistente == null)
             {
                 return null;
             }
@@ -65,7 +71,7 @@ namespace EnsynusApi.Repository.Aluno
         {
             var alunoExistente = await _context.Alunos.FindAsync(id);
 
-            if( alunoExistente == null)
+            if (alunoExistente == null)
             {
                 return null;
             }
@@ -98,6 +104,6 @@ namespace EnsynusApi.Repository.Aluno
             return false;
         }
 
-        
+
     }
 }

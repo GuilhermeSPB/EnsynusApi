@@ -27,6 +27,11 @@ namespace EnsynusApi.Repository.Professor
             return await _context.Professors.FindAsync(id);
         }
 
+        public async Task<Models.Professor> GetByEmailAsync(string email)
+        {
+            return await _context.Professors.FirstOrDefaultAsync(p => p.ProEmail == email);
+        }
+         
         public async Task<Models.Professor> UpdateAsync(int id, UpdateProfessorDto updateDto)
         {
             var prof = await _context.Professors.FindAsync(id);

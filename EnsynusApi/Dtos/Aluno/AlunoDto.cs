@@ -10,7 +10,7 @@ namespace EnsynusApi.Dtos.Aluno
 
         public string AluEmail { get; set; } = null!;
 
-        public DateTime AluDataNasc { get; set; } = DateTime.MinValue;
+        public DateTime? AluDataNasc { get; set; }
 
         public string? AluEmailResp { get; set; }
 

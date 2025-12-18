@@ -11,6 +11,7 @@ namespace EnsynusApi.Repository.Aluno
     {
         Task<List<Models.Aluno>> GetAllAsync();
         Task<Models.Aluno> GetByIdAsync(int id);
+        Task<Models.Aluno> GetByEmailAsync(string email);
         Task<Models.Aluno> UpdateAsync(int id, UpdateAlunoDto alunoDto);
         Task<Models.Aluno> CreateAsync(Models.Aluno aluno);
         Task<Models.Aluno> DeleteAsync(int id);

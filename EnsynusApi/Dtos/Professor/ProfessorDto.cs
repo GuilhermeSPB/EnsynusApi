@@ -12,7 +12,7 @@ namespace EnsynusApi.Dtos.Professor
 
         public string ProSenha { get; set; } = null!;
 
-        public DateTime ProDataNasc { get; set; } = DateTime.MinValue;
+        public DateTime? ProDataNasc { get; set; }
 
     }
 }

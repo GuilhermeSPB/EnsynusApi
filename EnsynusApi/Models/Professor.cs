@@ -13,7 +13,7 @@ public partial class Professor
 
     public string ProSenha { get; set; } = null!;
 
-    public DateTime ProDataNasc { get; set; } = DateTime.MinValue;
+    public DateTime? ProDataNasc { get; set; } = DateTime.MinValue;
 
     public virtual ICollection<Turma> Turmas { get; set; } = new List<Turma>();
 }

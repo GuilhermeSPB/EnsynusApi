@@ -2,6 +2,7 @@
 using EnsynusApi.Dtos.Professor;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace EnsynusApi.Repository.Professor
 {
@@ -9,6 +10,7 @@ namespace EnsynusApi.Repository.Professor
     {
         Task<List<Models.Professor>> GetAllAsync();
         Task<Models.Professor> GetByIdAsync(int id);
+        Task<Models.Professor> GetByEmailAsync(string email);
         Task<Models.Professor> UpdateAsync(int id, UpdateProfessorDto professorDto);
         Task<Models.Professor> CreateAsync(Models.Professor professor);
         Task<Models.Professor> DeleteAsync(int id);
