@@ -10,8 +10,8 @@
 
 
         //Campos Alunos
-        public string NomeResp { get; set; }
-        public string EmailResp { get; set; }
+        public string? NomeResp { get; set; }
+        public string? EmailResp { get; set; }
 
 
     }

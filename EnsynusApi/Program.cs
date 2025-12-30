@@ -36,6 +36,17 @@ builder.Services.AddDbContext<EnsynusContext>(options =>
         )
     );
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("FrontEndPolicy", policy =>
+    {
+        policy
+        .WithOrigins("http://localhost:5173")
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddScoped<IAlunoRepository, AlunoRepository>();
 builder.Services.AddScoped<IProfessorRepository, ProfessorRepository>();
 builder.Services.AddScoped<ITurmaRepository, TurmaRepository>();
@@ -56,7 +67,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseCors("FrontEndPolicy"); 
+
+//app.UseHttpsRedirection();
 
 app.MapControllers();
 
