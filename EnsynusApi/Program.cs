@@ -1,20 +1,20 @@
 using EnsynusApi.Data;
-using EnsynusApi.Dtos.Aluno;
-using EnsynusApi.Dtos.Professor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Mvc;
-using EnsynusApi.Repository;
 using EnsynusApi.Repository.Aluno;
 using EnsynusApi.Repository.Professor;
 using EnsynusApi.Repository.Turma;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using EnsynusApi.Repository.Ingresso;
 using EnsynusApi.Service.Auth;
 using EnsynusApi.Service.Token;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+//Config
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 Console.WriteLine("Connection => " +
     builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -25,10 +25,27 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Ensynus API", Version = "v1" });
 });
 
+
+//Auth
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"])),
+    };
+});
+
+builder.Services.AddAuthorization();
+
+
 builder.Services.AddControllers();
 
 
-
+//Database
 builder.Services.AddDbContext<EnsynusContext>(options =>
     options.UseMySql(
         connectionString,
@@ -36,6 +53,8 @@ builder.Services.AddDbContext<EnsynusContext>(options =>
         )
     );
 
+
+//Cors
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("FrontEndPolicy", policy =>
@@ -47,6 +66,8 @@ builder.Services.AddCors(options =>
     });
 });
 
+
+//Repositórios
 builder.Services.AddScoped<IAlunoRepository, AlunoRepository>();
 builder.Services.AddScoped<IProfessorRepository, ProfessorRepository>();
 builder.Services.AddScoped<ITurmaRepository, TurmaRepository>();
@@ -60,16 +81,14 @@ Console.WriteLine("Connection => " +
     builder.Configuration.GetConnectionString("DefaultConnection"));
 
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseCors("FrontEndPolicy"); 
+app.UseCors("FrontEndPolicy");
 
-//app.UseHttpsRedirection();
 
 app.MapControllers();
 
