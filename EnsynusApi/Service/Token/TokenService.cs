@@ -36,7 +36,7 @@ namespace EnsynusApi.Service.Token
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddHours(2),
+                expires: DateTime.Now.AddMinutes(30),
                 signingCredentials: creds
             );
 

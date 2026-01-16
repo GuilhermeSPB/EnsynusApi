@@ -35,7 +35,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateAudience = false,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"])),
+        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
     };
 });
 
@@ -59,10 +59,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("FrontEndPolicy", policy =>
     {
-        policy
-        .WithOrigins("http://localhost:5173")
-        .AllowAnyHeader()
-        .AllowAnyMethod();
+        policy.WithOrigins("http://localhost:5173")
+                 .AllowAnyHeader()
+                 .AllowAnyMethod()
+                 .AllowCredentials();
     });
 });
 
@@ -89,7 +89,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("FrontEndPolicy");
 
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run(); ;
+app.Run();
