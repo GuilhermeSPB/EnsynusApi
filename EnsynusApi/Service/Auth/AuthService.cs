@@ -1,11 +1,9 @@
-﻿using System;
-using EnsynusApi.Dtos.Auth;
+﻿using EnsynusApi.Dtos.Auth;
+using EnsynusApi.Models;
 using EnsynusApi.Repository.Aluno;
 using EnsynusApi.Repository.Professor;
-using System.Runtime.CompilerServices;
+using EnsynusApi.Service.Email;
 using EnsynusApi.Service.Token;
-using BCrypt.Net;
-using System.Data;
 
 namespace EnsynusApi.Service.Auth
 {
@@ -14,14 +12,18 @@ namespace EnsynusApi.Service.Auth
         private readonly IAlunoRepository _alunoRepository;
         private readonly IProfessorRepository _professorRepository;
         private readonly ITokenService _tokenService;
+        private readonly IEmailService _emailService;
+
 
         public AuthService(IAlunoRepository alunoRepository,
                            IProfessorRepository professorRepository,
-                           ITokenService tokenService)
+                           ITokenService tokenService,
+                           IEmailService emailService)
         {
             _alunoRepository = alunoRepository;
             _professorRepository = professorRepository;
             _tokenService = tokenService;
+            _emailService = emailService;
         }
 
 
@@ -37,6 +39,9 @@ namespace EnsynusApi.Service.Auth
                 {
                     throw new UnauthorizedAccessException("Checar e-mail ou senha");
                 }
+
+                if (!aluno.EmailConfirmado)
+                    throw new Exception("Confirme seu email antes de entrar");
 
                 var tokenAluno = _tokenService.GenerateToken(
                     aluno.AluId,
@@ -59,6 +64,9 @@ namespace EnsynusApi.Service.Auth
             {
                 throw new UnauthorizedAccessException("Checar e-mail, senha ou tipo de perfil");
             }
+
+            if (!professor.EmailConfirmado)
+                throw new Exception("Confirme seu email antes de entrar");
 
             var tokenProfessor = _tokenService.GenerateToken(
                 professor.ProId,
@@ -108,10 +116,23 @@ namespace EnsynusApi.Service.Auth
                     AluSenha = senhaHash,
                     AluDataNasc = registerDto.DataNasc,
                     AluNomeResp = registerDto.NomeResp,
-                    AluEmailResp = registerDto.EmailResp
+                    AluEmailResp = registerDto.EmailResp,
+                    EmailConfirmado = false,
+                    EmailToken = Guid.NewGuid().ToString(),
+                    EmailTokenExpira = DateTime.UtcNow.AddMinutes(30)
                 };
                 await _alunoRepository.CreateAsync(aluno);
 
+
+                var link = $"http://localhost:5173/confirmar-email?token={aluno.EmailToken}";
+
+                await _emailService.SendAsync(
+                aluno.AluEmail,
+                "Confirme seu e-mail",
+                $"<p>Olá, {aluno.AluNome}.</p>" +
+                $"<p>Clique no link abaixo para confirmar seu e-mail:</p>" +
+                $"<a href='{link}'>Confirmar e-mail</a>"
+            );
 
                 var tokenAluno = _tokenService.GenerateToken(
                     aluno.AluId,

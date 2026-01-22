@@ -9,6 +9,7 @@ using EnsynusApi.Service.Auth;
 using EnsynusApi.Service.Token;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using EnsynusApi.Service.Email;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -74,6 +75,7 @@ builder.Services.AddScoped<ITurmaRepository, TurmaRepository>();
 builder.Services.AddScoped<IIngressoRepository, IngressoRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 var app = builder.Build();
 

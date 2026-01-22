@@ -65,6 +65,12 @@ public partial class EnsynusContext : DbContext
             entity.Property(e => e.AluSenha)
                 .HasMaxLength(100)
                 .HasColumnName("alu_senha");
+            entity.Property(e => e.EmailConfirmado)
+                .HasColumnName("email_confirmado");
+            entity.Property(e => e.EmailToken)
+                .HasColumnName("email_token");
+            entity.Property(e => e.EmailTokenExpira)
+                .HasColumnName("email_token_expira");
         });
 
         modelBuilder.Entity<Aula>(entity =>
@@ -167,6 +173,12 @@ public partial class EnsynusContext : DbContext
             entity.Property(e => e.ProSenha)
                 .HasMaxLength(100)
                 .HasColumnName("pro_senha");
+            entity.Property(e => e.EmailConfirmado)
+                .HasColumnName("email_confirmado");
+            entity.Property(e => e.EmailToken)
+                .HasColumnName("email_token");
+            entity.Property(e => e.EmailTokenExpira)
+                .HasColumnName("email_token_expira");
         });
 
         modelBuilder.Entity<Turma>(entity =>

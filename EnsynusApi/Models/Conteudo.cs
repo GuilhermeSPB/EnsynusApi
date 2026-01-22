@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EnsynusApi.Models;
 
+[Table("conteudo")]
 public partial class Conteudo
 {
     public int ConId { get; set; }

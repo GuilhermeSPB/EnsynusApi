@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EnsynusApi.Models;
 
+[Table("turma")]
 public partial class Turma
 {
     public int TurId { get; set; }

@@ -1,6 +1,7 @@
-﻿namespace EnsynusApi.Models
-{
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
+namespace EnsynusApi.Models
+{
     public partial class VwIngresso
     {
         public int Cod { get; set; }

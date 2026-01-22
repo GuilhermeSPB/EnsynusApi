@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EnsynusApi.Models;
 
+[Table("aula")]
 public partial class Aula
 {
     public int AulId { get; set; }
