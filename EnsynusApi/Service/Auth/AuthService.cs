@@ -4,6 +4,10 @@ using EnsynusApi.Repository.Aluno;
 using EnsynusApi.Repository.Professor;
 using EnsynusApi.Service.Email;
 using EnsynusApi.Service.Token;
+using EnsynusApi.Data;
+using Microsoft.AspNetCore.Http.HttpResults;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace EnsynusApi.Service.Auth
 {
@@ -13,17 +17,20 @@ namespace EnsynusApi.Service.Auth
         private readonly IProfessorRepository _professorRepository;
         private readonly ITokenService _tokenService;
         private readonly IEmailService _emailService;
-
+        private readonly EnsynusContext _context;
+        
 
         public AuthService(IAlunoRepository alunoRepository,
                            IProfessorRepository professorRepository,
                            ITokenService tokenService,
-                           IEmailService emailService)
+                           IEmailService emailService,
+                           EnsynusContext context)
         {
             _alunoRepository = alunoRepository;
             _professorRepository = professorRepository;
             _tokenService = tokenService;
             _emailService = emailService;
+            _context = context;
         }
 
 
@@ -179,6 +186,35 @@ namespace EnsynusApi.Service.Auth
             };
 
 
+        }
+
+        public async Task<bool> ConfirmarEmail(string token)
+        {
+            var aluno = await _context.Alunos
+            .FirstOrDefaultAsync(x => x.EmailToken == token);
+
+                if (aluno != null)
+                {
+                    aluno.EmailConfirmado = true;
+                    aluno.EmailToken = null;
+                    aluno.EmailTokenExpira = null;
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+
+                var professor = await _context.Professors
+                    .FirstOrDefaultAsync(x => x.EmailToken == token);
+
+                if (professor != null)
+                {
+                    professor.EmailConfirmado = true;
+                    professor.EmailToken = null;
+                    professor.EmailTokenExpira = null;
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+            
+            return false;
         }
 
     }

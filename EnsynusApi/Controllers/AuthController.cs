@@ -4,6 +4,7 @@ using EnsynusApi.Service.Auth;
 using EnsynusApi.Data;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace EnsynusApi.Controllers
 {
     [Route("ensynus/api/auth")]
@@ -12,6 +13,7 @@ namespace EnsynusApi.Controllers
     {
         private readonly IAuthService _authService;
         private readonly EnsynusContext _context;
+
         public AuthController(IAuthService authService,
                               EnsynusContext context)
         {
@@ -36,20 +38,16 @@ namespace EnsynusApi.Controllers
         [HttpGet("confirm-email")]
         public async Task<IActionResult> ConfirmEmail(string token)
         {
-            var aluno = await _context.Alunos.FirstOrDefaultAsync(a => a.EmailToken == token);
 
-            if (aluno == null)
-                return BadRequest("Token inválido");
+            var confirm = await _authService.ConfirmarEmail(token);
 
-            if (aluno.EmailTokenExpira < DateTime.UtcNow)
-                return BadRequest("Token expirado");
+            if (confirm)
+                return Ok("Email confirmado");
 
 
-            aluno.EmailConfirmado = true;
-            aluno.EmailToken = null;
-            aluno.EmailTokenExpira = null;
+            return BadRequest("Erro ao confirmar email");
 
-            return Ok("Email confirmado com sucesso.");
+            
             
         }
     }
