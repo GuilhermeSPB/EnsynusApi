@@ -48,7 +48,7 @@ namespace EnsynusApi.Service.Auth
                 }
 
                 if (!aluno.EmailConfirmado)
-                    throw new Exception("Confirme seu email antes de entrar");
+                    return StatusCodes(403,"Confirme seu email antes de entrar");
 
                 var tokenAluno = _tokenService.GenerateToken(
                     aluno.AluId,
