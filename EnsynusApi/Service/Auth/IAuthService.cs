@@ -7,5 +7,7 @@ namespace EnsynusApi.Service.Auth
         Task<AuthResponseDto?> LoginUserAsync(AuthLoginDto loginDto);
         Task<AuthResponseDto> RegisterUserAsync(AuthRegisterDto registerDto);
         Task<bool> ConfirmarEmail(string token);
+
+        Task ReenviarEmail(AuthReenviarEmailDto reenviarEmailDto);
     }
 }

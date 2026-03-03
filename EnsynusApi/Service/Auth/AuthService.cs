@@ -8,16 +8,20 @@ using EnsynusApi.Data;
 using Microsoft.AspNetCore.Http.HttpResults;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using EnsynusApi.Exceptions;
 
 namespace EnsynusApi.Service.Auth
 {
-    public class AuthService : IAuthService
+    public class AuthService :  IAuthService
+
     {
         private readonly IAlunoRepository _alunoRepository;
         private readonly IProfessorRepository _professorRepository;
         private readonly ITokenService _tokenService;
         private readonly IEmailService _emailService;
         private readonly EnsynusContext _context;
+
+
         
 
         public AuthService(IAlunoRepository alunoRepository,
@@ -44,12 +48,12 @@ namespace EnsynusApi.Service.Auth
 
                 if (aluno == null || !BCrypt.Net.BCrypt.Verify(loginDto.Senha, aluno.AluSenha))
                 {
-                    throw new UnauthorizedAccessException("Checar e-mail ou senha");
+                    throw new CredenciaisInvalidasException();
                 }
 
                 if (!aluno.EmailConfirmado)
-                    return StatusCodes(403,"Confirme seu email antes de entrar");
-
+                    throw new EmailNaoConfirmadoException();
+                
                 var tokenAluno = _tokenService.GenerateToken(
                     aluno.AluId,
                     aluno.AluNome,
@@ -69,11 +73,11 @@ namespace EnsynusApi.Service.Auth
             var professor = await _professorRepository.GetByEmailAsync(loginDto.Email);
             if (professor == null || !BCrypt.Net.BCrypt.Verify(loginDto.Senha, professor.ProSenha))
             {
-                throw new UnauthorizedAccessException("Checar e-mail, senha ou tipo de perfil");
+                throw new CredenciaisInvalidasException();
             }
 
             if (!professor.EmailConfirmado)
-                throw new Exception("Confirme seu email antes de entrar");
+                throw new EmailNaoConfirmadoException();
 
             var tokenProfessor = _tokenService.GenerateToken(
                 professor.ProId,
@@ -185,8 +189,55 @@ namespace EnsynusApi.Service.Auth
                 Role = UserRole.Professor
             };
 
-
         }
+
+        public async Task ReenviarEmail(AuthReenviarEmailDto reenviarEmailDto)
+        {
+            
+            
+
+            if (reenviarEmailDto.EmailTokenExpira < DateTime.UtcNow)
+            {
+                var novoToken = Guid.NewGuid().ToString();
+                var novoTokenExpira = DateTime.UtcNow.AddMinutes(30);
+
+                
+            var aluno = await _context.Alunos
+            .FirstOrDefaultAsync(x => x.AluEmail == reenviarEmailDto.Email);
+
+               if (aluno != null)
+               {
+                   aluno.EmailToken = novoToken;
+                   aluno.EmailTokenExpira = novoTokenExpira;
+                   await _context.SaveChangesAsync();
+                }
+
+            var professor = await _context.Professors
+            .FirstOrDefaultAsync(x => x.ProEmail == reenviarEmailDto.Email);
+
+               if(professor != null)
+                {
+                    professor.EmailToken = novoToken;
+                    professor.EmailTokenExpira = novoTokenExpira;
+                    await _context.SaveChangesAsync();
+                }
+
+               reenviarEmailDto.EmailToken = novoToken;
+               reenviarEmailDto.EmailTokenExpira = novoTokenExpira;
+            }
+
+            var link = $"http://localhost:5173/confirmar-email?token={reenviarEmailDto.EmailToken}";
+
+            await _emailService.SendAsync(
+                reenviarEmailDto.Email,
+                "Confirme seu e-mail",
+                $"<p>Olá, {reenviarEmailDto.Nome}.</p>" +
+                $"<p>Clique no link abaixo para confirmar seu e-mail:</p>" +
+                $"<a href='{link}'>Confirmar e-mail</a>");
+
+            
+        }
+
 
         public async Task<bool> ConfirmarEmail(string token)
         {

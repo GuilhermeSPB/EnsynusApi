@@ -10,6 +10,7 @@ using EnsynusApi.Service.Token;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using EnsynusApi.Service.Email;
+using EnsynusApi.Middleware;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -90,6 +91,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("FrontEndPolicy");
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();

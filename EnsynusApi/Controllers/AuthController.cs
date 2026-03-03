@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using EnsynusApi.Data;
 using EnsynusApi.Dtos.Auth;
+using EnsynusApi.Exceptions;
+using EnsynusApi.Models;
 using EnsynusApi.Service.Auth;
-using EnsynusApi.Data;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -24,8 +26,8 @@ namespace EnsynusApi.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] AuthLoginDto loginDto)
         {
-            var response = await _authService.LoginUserAsync(loginDto);
-            return Ok(response);
+                var response = await _authService.LoginUserAsync(loginDto);
+                return Ok(response);
         }
 
         [HttpPost("register")]
@@ -45,10 +47,58 @@ namespace EnsynusApi.Controllers
                 return Ok("Email confirmado");
 
 
-            return BadRequest("Erro ao confirmar email");
+            return BadRequest("Erro ao confirmar email");                 
+        }
 
-            
-            
+
+
+        [HttpGet("reenviar-email")]
+        public async Task<IActionResult> ReenviarEmail(string email, int role)
+        {
+            var user = new AuthReenviarEmailDto { };
+
+
+            if (role == 0)
+            {
+                var aluno = await _context.Alunos.FirstOrDefaultAsync(a => a.AluEmail == email);
+
+                user = new AuthReenviarEmailDto
+                {
+                    Email = aluno.AluEmail,
+                    Nome = aluno.AluNome,
+                    EmailConfirmado = aluno.EmailConfirmado,
+                    EmailToken = aluno.EmailToken,
+                    EmailTokenExpira = aluno.EmailTokenExpira,
+                    Role = UserRole.Aluno
+
+                };
+            }
+            else
+            {
+
+                var professor = await _context.Professors.FirstOrDefaultAsync(p => p.ProEmail == email);
+
+                user = new AuthReenviarEmailDto
+                {
+                    Email = professor.ProEmail,
+                    Nome = professor.ProNome,
+                    EmailConfirmado = professor.EmailConfirmado,
+                    EmailToken = professor.EmailToken,
+                    EmailTokenExpira = professor.EmailTokenExpira,
+                    Role = UserRole.Professor
+                };
+            }
+
+            try
+            {
+                await _authService.ReenviarEmail(user);
+                return Ok("Email reenviado com sucesso");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Erro ao reenviar email {ex}");
+
+            }
         }
     }
 }
